@@ -7,6 +7,7 @@ defmodule Kubatana.Accounts.User do
     field :password, :string, virtual: true, redact: true
     field :hashed_password, :string, redact: true
     field :confirmed_at, :naive_datetime
+    field :role, :string
 
     timestamps()
   end
@@ -39,6 +40,7 @@ defmodule Kubatana.Accounts.User do
     |> cast(attrs, [:email, :password])
     |> validate_email(opts)
     |> validate_password(opts)
+    |> validate_role()
   end
 
   defp validate_email(changeset, opts) do
@@ -153,6 +155,20 @@ defmodule Kubatana.Accounts.User do
       changeset
     else
       add_error(changeset, :current_password, "is not valid")
+    end
+  end
+
+  defp validate_role(changeset) do
+    valid_roles = ["employee", "manager", "admin"]
+
+    case get_change(changeset, :role) do
+      nil -> changeset
+      role ->
+        if role in valid_roles do
+          changeset
+        else
+          add_error(changeset, :role, "invalid role")
+        end
     end
   end
 end
