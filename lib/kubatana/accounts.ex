@@ -77,7 +77,12 @@ defmodule Kubatana.Accounts do
   def register_user(attrs) do
     %User{}
     |> User.registration_changeset(attrs)
+    |> assign_role("employee")
     |> Repo.insert()
+  end
+
+  defp assign_role(changeset, role) do
+    Ecto.Changeset.change(changeset, role: role)
   end
 
   @doc """
