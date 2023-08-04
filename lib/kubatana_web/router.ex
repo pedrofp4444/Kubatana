@@ -21,6 +21,14 @@ defmodule KubatanaWeb.Router do
     pipe_through :browser
 
     get "/", PageController, :home
+
+
+    live "/members", UserLive.Index, :index
+    live "/members/new", UserLive.Index, :new
+    live "/members/:id/edit", UserLive.Index, :edit
+
+    live "/members/:id", UserLive.Show, :show
+    live "/members/:id/show/edit", UserLive.Show, :edit
   end
 
   # Other scopes may use custom stacks.
