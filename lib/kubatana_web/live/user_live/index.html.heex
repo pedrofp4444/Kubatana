@@ -1,0 +1,43 @@
+<.header>
+  Listing Members
+  <:actions>
+    <.link patch={~p"/members/new"}>
+      <.button>New User</.button>
+    </.link>
+  </:actions>
+</.header>
+
+<.table
+  id="members"
+  rows={@streams.members}
+  row_click={fn {_id, user} -> JS.navigate(~p"/members/#{user}") end}
+>
+  <:col :let={{_id, user}} label="Name"><%= user.name %></:col>
+  <:col :let={{_id, user}} label="Age"><%= user.age %></:col>
+  <:col :let={{_id, user}} label="House"><%= user.house %></:col>
+  <:action :let={{_id, user}}>
+    <div class="sr-only">
+      <.link navigate={~p"/members/#{user}"}>Show</.link>
+    </div>
+    <.link patch={~p"/members/#{user}/edit"}>Edit</.link>
+  </:action>
+  <:action :let={{id, user}}>
+    <.link
+      phx-click={JS.push("delete", value: %{id: user.id}) |> hide("##{id}")}
+      data-confirm="Are you sure?"
+    >
+      Delete
+    </.link>
+  </:action>
+</.table>
+
+<.modal :if={@live_action in [:new, :edit]} id="user-modal" show on_cancel={JS.patch(~p"/members")}>
+  <.live_component
+    module={KubatanaWeb.UserLive.FormComponent}
+    id={@user.id || :new}
+    title={@page_title}
+    action={@live_action}
+    user={@user}
+    patch={~p"/members"}
+  />
+</.modal>
