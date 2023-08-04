@@ -22,13 +22,19 @@ defmodule KubatanaWeb.Router do
 
     get "/", PageController, :home
 
-
     live "/members", UserLive.Index, :index
     live "/members/new", UserLive.Index, :new
     live "/members/:id/edit", UserLive.Index, :edit
 
     live "/members/:id", UserLive.Show, :show
     live "/members/:id/show/edit", UserLive.Show, :edit
+
+    live "/houses", HouseLive.Index, :index
+    live "/houses/new", HouseLive.Index, :new
+    live "/houses/:id/edit", HouseLive.Index, :edit
+
+    live "/houses/:id", HouseLive.Show, :show
+    live "/houses/:id/show/edit", HouseLive.Show, :edit
   end
 
   # Other scopes may use custom stacks.

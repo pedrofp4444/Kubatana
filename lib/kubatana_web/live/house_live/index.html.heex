@@ -1,0 +1,42 @@
+<.header>
+  Listing Houses
+  <:actions>
+    <.link patch={~p"/houses/new"}>
+      <.button>New House</.button>
+    </.link>
+  </:actions>
+</.header>
+
+<.table
+  id="houses"
+  rows={@streams.houses}
+  row_click={fn {_id, house} -> JS.navigate(~p"/houses/#{house}") end}
+>
+  <:col :let={{_id, house}} label="Name"><%= house.name %></:col>
+  <:col :let={{_id, house}} label="Capacity"><%= house.capacity %></:col>
+  <:action :let={{_id, house}}>
+    <div class="sr-only">
+      <.link navigate={~p"/houses/#{house}"}>Show</.link>
+    </div>
+    <.link patch={~p"/houses/#{house}/edit"}>Edit</.link>
+  </:action>
+  <:action :let={{id, house}}>
+    <.link
+      phx-click={JS.push("delete", value: %{id: house.id}) |> hide("##{id}")}
+      data-confirm="Are you sure?"
+    >
+      Delete
+    </.link>
+  </:action>
+</.table>
+
+<.modal :if={@live_action in [:new, :edit]} id="house-modal" show on_cancel={JS.patch(~p"/houses")}>
+  <.live_component
+    module={KubatanaWeb.HouseLive.FormComponent}
+    id={@house.id || :new}
+    title={@page_title}
+    action={@live_action}
+    house={@house}
+    patch={~p"/houses"}
+  />
+</.modal>
